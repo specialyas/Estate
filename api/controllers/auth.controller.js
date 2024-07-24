@@ -49,10 +49,18 @@ export const login = async (req, res) => {
     // GENERATE COKIE TOKEN AND SEND TO THE USER
 
     // res.setHeader("Set-Cookie", "test=" + "myValue");
+    const age = 1000 * 60 * 60 * 24 * 7;
 
-    const age = 1000 * 60 * 60 * 24 * 7
+    const token = jwt.sign(
+      {
+        id: user.id,
+      },
+      process.env.JWT_SECRET_KEY,
+      { expiresIn: age }
+    );
+
     res
-      .cookie("test2", "myValue2", {
+      .cookie("token", token, {
         httpOnly: true,
         // secure: true
         maxAge: age,
@@ -64,6 +72,7 @@ export const login = async (req, res) => {
     res.status(500).json({ message: "Login unsucessfull !!!" });
   }
 };
+
 export const logout = (req, res) => {
   // db operations
 };
