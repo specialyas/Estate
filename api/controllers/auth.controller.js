@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import prisma from "../lib/prisma.js";
 
 export const register = async (req, res) => {
+  // get username, email and password from the request
   const { username, email, password } = req.body;
 
   try {
@@ -74,5 +75,6 @@ export const login = async (req, res) => {
 };
 
 export const logout = (req, res) => {
-  // db operations
+  // clear cookie
+  res.clearCookie("token").status(200).json({ message: "Logout succesfull" });
 };
