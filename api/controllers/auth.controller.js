@@ -27,8 +27,43 @@ export const register = async (req, res) => {
   }
 };
 
-// export const login = async (req, res) => {
-  
+export const login = async (req, res) => {
+  const { username, email, password } = req.body;
+
+  try {
+    // CHECK UF USER EXISTS
+
+    const user = await prisma.user.findUnique({
+      where: { username },
+    });
+
+    if (!user) return res.status(401).json({ message: "invalid credentials" });
+
+    // CHECK IF PASSWORD IS VALID
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid)
+      return res.status(401).json({ message: "Invalid crentials!!!" });
+
+    // GENERATE COKIE TOKEN AND SEND TO THE USER
+
+    // res.setHeader("Set-Cookie", "test=" + "myValue");
+
+    const age = 1000 * 60 * 60 * 24 * 7
+    res
+      .cookie("test2", "myValue2", {
+        httpOnly: true,
+        // secure: true
+        maxAge: age,
+      })
+      .status(200)
+      .json({ message: "Login Successful" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Login unsucessfull !!!" });
+  }
+};
 export const logout = (req, res) => {
   // db operations
 };
